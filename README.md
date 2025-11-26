@@ -50,17 +50,7 @@ NoteApp/
 
 ## 🏃 Como Executar
 
-### Opção 1: Scripts Automáticos (Windows)
-
-```bash
-# 1. Instalar dependências
-install.bat
-
-# 2. Iniciar aplicação
-start.bat
-```
-
-### Opção 2: Manual
+### Opção: Manual
 
 #### Backend
 ```bash
