@@ -1,7 +1,39 @@
+/**
+ * AboutPage Component
+ * 
+ * Página informativa sobre o projeto NoteApp.
+ * Documentação visual e interativa apresentando arquitetura, tecnologias e funcionalidades.
+ * 
+ * Conteúdo:
+ * - Hero: Badge de versão, título e descrição do projeto
+ * - Funcionalidades: Grid com 6 features principais (CRUD, LocalStorage, etc)
+ * - Arquitetura: Explicação visual das 4 camadas da Clean Architecture
+ * - Tech Stack: Tecnologias frontend e backend com descrições
+ * - Documentação: Lista de 11 arquivos .md disponíveis
+ * - SOLID: Cards explicando cada princípio SOLID
+ * - Créditos: Links e informações sobre desenvolvimento
+ * 
+ * Design:
+ * - Layout informativo e educacional
+ * - Cards interativos com hover effects
+ * - Seções bem separadas visualmente
+ * - Gradientes e cores do tema
+ * - Responsivo para todos os dispositivos
+ * 
+ * @component
+ * @example
+ * ```tsx
+ * <Route path="/about" element={<AboutPage />} />
+ * ```
+ */
 import React from 'react';
 import './AboutPage.css';
 
 export const AboutPage: React.FC = () => {
+  /**
+   * Array de funcionalidades principais da aplicação
+   * Usado para renderizar grid de features
+   */
   const features = [
     {
       icon: '📝',
@@ -35,6 +67,10 @@ export const AboutPage: React.FC = () => {
     }
   ];
 
+  /**
+   * Stack tecnológica organizada por camada (Frontend/Backend)
+   * Cada tecnologia inclui nome e descrição breve
+   */
   const techStack = [
     {
       category: 'Frontend',
@@ -60,6 +96,10 @@ export const AboutPage: React.FC = () => {
     }
   ];
 
+  /**
+   * Camadas da Clean Architecture com exemplos práticos
+   * Ilustra separação de responsabilidades do projeto
+   */
   const architecture = [
     {
       layer: 'Domain',

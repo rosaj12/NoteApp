@@ -1,23 +1,63 @@
+/**
+ * SettingsPage Component
+ * 
+ * Página de configurações e preferências da aplicação.
+ * Permite personalização da experiência do usuário e gerenciamento de dados.
+ * 
+ * Seções:
+ * 1. Aparência: Seleção de tema (claro/escuro)
+ * 2. Preferências: Auto-save, notificações, categoria padrão
+ * 3. Dados e Armazenamento: Exportar backup, limpar dados, uso de storage
+ * 4. Informações: Versão, tecnologias, arquitetura
+ * 5. Atalhos de Teclado: Documentação de hotkeys
+ * 
+ * Funcionalidades:
+ * - Toggle de tema com feedback visual
+ * - Configurações persistidas com useLocalStorage
+ * - Exportar notas em JSON
+ * - Limpar todos os dados (com confirmação dupla)
+ * - Calcular uso do LocalStorage
+ * - Documentação de atalhos
+ * 
+ * @component
+ * @example
+ * ```tsx
+ * <Route path="/settings" element={<SettingsPage />} />
+ * ```
+ */
 import React from 'react';
 import { useTheme } from '../hooks/useTheme';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import './SettingsPage.css';
 
 export const SettingsPage: React.FC = () => {
+  // Hook de tema para controle claro/escuro
   const { theme, toggleTheme } = useTheme();
+  
+  // Preferências persistidas no LocalStorage
   const [autoSave, setAutoSave] = useLocalStorage('noteapp_autosave', true);
   const [notifications, setNotifications] = useLocalStorage('noteapp_notifications', true);
   const [defaultCategory, setDefaultCategory] = useLocalStorage('noteapp_default_category', 'Geral');
 
+  /**
+   * Limpa todos os dados do LocalStorage
+   * Implementa confirmação dupla para prevenir perda acidental
+   * Recarrega página após limpeza para resetar estado
+   */
   const handleClearData = () => {
     if (window.confirm('Tem certeza que deseja limpar TODOS os dados? Esta ação não pode ser desfeita!')) {
       if (window.confirm('Última confirmação: Isso irá deletar todas as suas notas!')) {
         localStorage.clear();
-        window.location.reload();
+        window.location.reload(); // Reload para limpar estado React
       }
     }
   };
 
+  /**
+   * Exporta notas em formato JSON
+   * Cria arquivo de backup com data atual no nome
+   * Usa Blob API para download client-side
+   */
   const handleExportData = () => {
     const notes = localStorage.getItem('noteapp_notes');
     if (!notes) {
@@ -25,24 +65,36 @@ export const SettingsPage: React.FC = () => {
       return;
     }
 
+    // Formata JSON com indentação para legibilidade
     const dataStr = JSON.stringify(JSON.parse(notes), null, 2);
     const dataBlob = new Blob([dataStr], { type: 'application/json' });
     const url = URL.createObjectURL(dataBlob);
+    
+    // Cria link temporário para download
     const link = document.createElement('a');
     link.href = url;
     link.download = `noteapp-backup-${new Date().toISOString().split('T')[0]}.json`;
     link.click();
+    
+    // Cleanup: revoga URL do blob
     URL.revokeObjectURL(url);
   };
 
+  /**
+   * Calcula uso total do LocalStorage em KB
+   * Itera por todas as chaves e soma tamanhos
+   * 
+   * @returns {string} Tamanho formatado em KB com 2 casas decimais
+   */
   const getStorageUsage = () => {
     let total = 0;
     for (let key in localStorage) {
       if (localStorage.hasOwnProperty(key)) {
+        // Soma tamanho da chave + valor
         total += localStorage[key].length + key.length;
       }
     }
-    return (total / 1024).toFixed(2); // KB
+    return (total / 1024).toFixed(2); // Converte bytes para KB
   };
 
   return (

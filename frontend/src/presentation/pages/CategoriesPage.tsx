@@ -1,13 +1,51 @@
+/**
+ * CategoriesPage Component
+ * 
+ * Página de visualização e análise de notas agrupadas por categorias.
+ * Oferece visão analítica e organizacional do sistema de notas.
+ * 
+ * Funcionalidades:
+ * - Agrupamento automático de notas por categoria
+ * - Estatísticas por categoria (quantidade de notas)
+ * - Preview das 3 notas mais recentes de cada categoria
+ * - Gráfico de distribuição percentual
+ * - Cards ordenados por quantidade (categorias mais usadas primeiro)
+ * - Estado vazio com CTA para criar primeira nota
+ * 
+ * Análises exibidas:
+ * - Total de categorias ativas
+ * - Total de notas no sistema
+ * - Média de notas por categoria
+ * - Distribuição visual com barra de progresso
+ * 
+ * @component
+ * @example
+ * ```tsx
+ * <Route path="/categories" element={<CategoriesPage />} />
+ * ```
+ */
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useNotes } from '../hooks/useNotes';
 import './CategoriesPage.css';
 
 export const CategoriesPage: React.FC = () => {
+  // Obtém todas as notas do sistema
   const { notes } = useNotes();
 
-  // Group notes by category
+  /**
+   * Memo: Agrupa notas por categoria e prepara dados analíticos
+   * 
+   * Processamento:
+   * 1. Agrupa notas em objeto Record<categoria, notas[]>
+   * 2. Transforma em array de objetos com metadados
+   * 3. Para cada categoria, seleciona 3 notas mais recentes
+   * 4. Ordena categorias por quantidade de notas (descendente)
+   * 
+   * Recalcula apenas quando array de notas muda
+   */
   const categoriesData = useMemo(() => {
+    // Etapa 1: Agrupamento
     const grouped: Record<string, typeof notes> = {};
     
     notes.forEach(note => {
@@ -17,17 +55,24 @@ export const CategoriesPage: React.FC = () => {
       grouped[note.category].push(note);
     });
 
+    // Etapa 2-4: Transformação, seleção de previews e ordenação
     return Object.entries(grouped)
       .map(([category, categoryNotes]) => ({
         name: category,
         count: categoryNotes.length,
+        // Ordena por data e pega as 3 mais recentes para preview
         notes: categoryNotes.sort((a, b) => 
           new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
-        ).slice(0, 3), // Últimas 3 notas
+        ).slice(0, 3),
       }))
-      .sort((a, b) => b.count - a.count); // Ordenar por quantidade
+      // Ordena categorias pela quantidade (mais usadas primeiro)
+      .sort((a, b) => b.count - a.count);
   }, [notes]);
 
+  /**
+   * Mapeamento de ícones por categoria
+   * Usado para identificação visual rápida
+   */
   const categoryIcons: Record<string, string> = {
     'Geral': '📌',
     'Trabalho': '💼',
@@ -36,6 +81,10 @@ export const CategoriesPage: React.FC = () => {
     'Ideias': '💡',
   };
 
+  /**
+   * Mapeamento de cores por categoria
+   * Usado em badges e visualizações
+   */
   const categoryColors: Record<string, string> = {
     'Geral': '#2196f3',
     'Trabalho': '#ff9800',

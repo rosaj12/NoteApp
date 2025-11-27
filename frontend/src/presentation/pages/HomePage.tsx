@@ -1,3 +1,28 @@
+/**
+ * HomePage Component
+ * 
+ * Página inicial (landing page) da aplicação NoteApp.
+ * Apresenta visão geral do sistema com estatísticas, funcionalidades e notas recentes.
+ * 
+ * Seções:
+ * - Hero: Título, subtítulo, estatísticas (total de notas, categorias, tema)
+ * - Features: Grid com 6 funcionalidades principais
+ * - Recent Notes: Últimas 6 notas criadas/atualizadas
+ * - Quick Links: Navegação rápida para outras páginas
+ * 
+ * Recursos:
+ * - Estatísticas em tempo real
+ * - Preview de notas recentes
+ * - CTAs (Call to Actions) para navegação
+ * - Design responsivo
+ * - Integração com hooks (useNotes, useTheme)
+ * 
+ * @component
+ * @example
+ * ```tsx
+ * <Route path="/" element={<HomePage />} />
+ * ```
+ */
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useNotes } from '../hooks/useNotes';
@@ -5,14 +30,19 @@ import { useTheme } from '../hooks/useTheme';
 import './HomePage.css';
 
 export const HomePage: React.FC = () => {
+  // Obtém todas as notas do sistema
   const { notes } = useNotes();
+  // Obtém tema atual para exibir nas estatísticas
   const { theme } = useTheme();
 
+  // Seleciona as 6 notas mais recentes para preview
   const recentNotes = notes.slice(0, 6);
+  // Extrai categorias únicas para contagem
   const categories = Array.from(new Set(notes.map(note => note.category)));
 
   return (
     <div className="home-page">
+      {/* Seção Hero: Banner principal com título e estatísticas */}
       <section className="hero-section">
         <div className="hero-content">
           <h1 className="hero-title">
@@ -21,6 +51,8 @@ export const HomePage: React.FC = () => {
           <p className="hero-subtitle">
             Gerencie suas notas de forma inteligente com Clean Architecture
           </p>
+          
+          {/* Cards de estatísticas: notas totais, categorias e tema */}
           <div className="hero-stats">
             <div className="stat-card">
               <div className="stat-number">{notes.length}</div>
@@ -35,6 +67,8 @@ export const HomePage: React.FC = () => {
               <div className="stat-label">Tema</div>
             </div>
           </div>
+          
+          {/* Botões de ação principal (CTAs) */}
           <div className="hero-actions">
             <Link to="/notes" className="btn btn-primary-large">
               📝 Ver Todas as Notas
@@ -46,6 +80,7 @@ export const HomePage: React.FC = () => {
         </div>
       </section>
 
+      {/* Seção de Funcionalidades: Grid com 6 features principais */}
       <section className="features-section">
         <h2 className="section-title">✨ Funcionalidades</h2>
         <div className="features-grid">
